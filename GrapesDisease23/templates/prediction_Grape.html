@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Grape Plant Leaf Disease Detection</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #4caf50;
+            --pale-green: #e8f5e9;
+            --dark-green: #1b5e20;
+            --accent-green: #8bc34a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--pale-green);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 1.5rem 0;
+            border-bottom: 5px solid var(--accent-green);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: normal;
+        }
+        
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .upload-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--light-green);
+        }
+        
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            fill: var(--primary-green);
+        }
+        
+        .file-input-container {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-label {
+            display: block;
+            background-color: var(--light-green);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-label:hover {
+            background-color: var(--dark-green);
+        }
+        
+        .file-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .footer {
+            background-color: var(--dark-green);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+        
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: -50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.5s ease;
+            border: 3px solid var(--accent-green);
+        }
+        
+        .popup.active {
+            top: 50%;
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .popup .content {
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .popup h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark-green);
+        }
+        
+        .popup h1 span {
+            font-size: 1.8rem;
+            color: var(--primary-green);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .popup button {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .popup button:hover {
+            background-color: var(--dark-green);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+        
+        .overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>द्राक्षाच्या पानांवर रोग आहे का नाही ते तपासा</h2>
+        <h1>Grape Plant Leaf Disease Detection</h1>
+    </div>
+    
+    <div class="main-container">
+        <div class="upload-container">
+            <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z"/>
+            </svg>
+            
+            <form method="POST" action="{{url_for('predictiongrape')}}" enctype="multipart/form-data" id="upload-form">
+                <div class="file-input-container">
+                    <input type="file" name="image" class="file-input" id="file-input" accept="image/*">
+                    <label for="file-input" class="file-label">
+                        Select Grape Leaf Image
+                    </label>
+                    <div class="file-name" id="file-name">No file selected</div>
+                </div>
+                
+                <button type="submit" class="submit-btn">Analyze Image</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>| Designed by | sandip_agro | 2025 |</p>
+    </div>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="popup" id="popup">
+        <div class="content">
+            <h1><span>सूचना / Warning</span>येथे तुम्ही फक्त द्राक्षाच्या पानाचा फोटो द्या <br>You just need to give photos of Grape Plants.</h1>
+            <button id="popup-close">Ok!!!</button>
+        </div>
+    </div>
+
+    <script>
+        // Show popup on page load
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('popup').classList.add('active');
+                document.getElementById('overlay').classList.add('active');
+            }, 1000);
+        };
+        
+        // Close popup when button is clicked
+        document.getElementById('popup-close').addEventListener('click', function() {
+            document.getElementById('popup').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+        
+        // Display selected file name
+        document.getElementById('file-input').addEventListener('change', function() {
+            const fileName = this.files[0] ? this.files[0].name : 'No file selected';
+            document.getElementById('file-name').textContent = fileName;
+        });
+    </script>
+</body>
+</html>

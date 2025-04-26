@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agmarknet Market Data</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Background grape image */
+    body {
+      background: url('/static/grapes.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    /* Overlay for content readability */
+    .overlay {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 2rem;
+      border-radius: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container my-5 overlay">
+    <h1 class="mb-4 text-center">Agmarknet Market Data</h1>
+
+    <!-- Input form -->
+    <form id="dateForm" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label for="datefrom" class="form-label">Date From:</label>
+        <input type="date" class="form-control" id="datefrom" name="datefrom" required>
+      </div>
+      <div class="col-md-4">
+        <label for="dateto" class="form-label">Date To:</label>
+        <input type="date" class="form-control" id="dateto" name="dateto" required>
+      </div>
+      <div class="col-md-4 text-end">
+        <button type="submit" class="btn btn-primary">Fetch Data</button>
+      </div>
+    </form>
+
+    <!-- Tip alert -->
+    <div class="alert alert-info mt-3">
+      <strong>Tip:</strong> Data is available up to <strong>31/Dec/2023</strong>.
+    </div>
+
+    <!-- Data table -->
+    {% if records %}
+      <div class="table-responsive mt-4">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Sl no.</th>
+              <th>District</th>
+              <th>Market</th>
+              <th>Commodity</th>
+              <th>Variety</th>
+              <th>Grade</th>
+              <th>Min Price</th>
+              <th>Max Price</th>
+              <th>Modal Price</th>
+              <th>Price Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in records %}
+              <tr>
+                <td>{{ r.sl_no }}</td>
+                <td>{{ r.district }}</td>
+                <td>{{ r.market }}</td>
+                <td>{{ r.commodity }}</td>
+                <td>{{ r.variety }}</td>
+                <td>{{ r.grade }}</td>
+                <td>{{ r.min_price }}</td>
+                <td>{{ r.max_price }}</td>
+                <td>{{ r.modal_price }}</td>
+                <td>{{ r.price_date }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% elif query %}
+      <div class="alert alert-warning mt-4">
+        No records found for <strong>{{ query.datefrom }}</strong> to <strong>{{ query.dateto }}</strong>.
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Date conversion & submission script -->
+  <script>
+    document.getElementById('dateForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const mNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      function toQueryFormat(isoDate) {
+        if (!isoDate) return '';
+        const [yyyy, mm, dd] = isoDate.split('-');
+        return `${dd}-${mNames[parseInt(mm,10)-1]}-${yyyy}`;
+      }
+      const fromInput = document.getElementById('datefrom').value;
+      const toInput = document.getElementById('dateto').value;
+      const df = toQueryFormat(fromInput);
+      const dt = toQueryFormat(toInput);
+      if (!df || !dt) return;
+      const params = new URLSearchParams({ datefrom: df, dateto: dt });
+      window.location.search = params.toString();
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

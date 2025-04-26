@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Leaf Disease Detection - Results</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-green: #2e7d32;
+            --light-green: #f1f8e9;
+            --dark-green: #1b5e20;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        .header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px 0;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .site-logo {
+            color: var(--primary-green);
+            font-weight: bold;
+            font-size: 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-img {
+            height: 30px;
+            margin-right: 10px;
+            border: none;
+        }
+        
+        .content-section {
+            padding: 40px 0;
+        }
+        
+        .page-title {
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+        
+        .result-container {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .image-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .result-image {
+            max-width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .result-section {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background-color: var(--light-green);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-heading {
+            color: var(--dark-green);
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        
+        .result-marathi {
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .prediction-result {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            border-left: 3px solid var(--primary-green);
+        }
+        
+        .prediction-label {
+            margin: 0;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .prediction-value {
+            color: var(--dark-green);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 5px 0 0 0;
+        }
+        
+        .btn-back {
+            background-color: var(--primary-green);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-back:hover {
+            background-color: var(--dark-green);
+            text-decoration: none;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .result-container {
+                flex-direction: column;
+            }
+            
+            .image-section, .result-section {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a class="site-logo" href="/">
+                <img src="{{url_for('static',filename='leaf-icon.png')}}" alt="Sandip Agro" class="logo-img">
+                Sandip University Agriculture
+            </a>
+        </div>
+    </header>
+
+    <!-- Content Section -->
+    <section class="content-section">
+        <div class="container">
+            <h1 class="page-title">Leaf Disease Detection Results</h1>
+            
+            <div class="result-container">
+                <!-- Left: Image -->
+                <div class="image-section">
+                    <img src="{{url_for('load_img')}}" alt="Uploaded plant leaf" class="result-image">
+                </div>
+                
+                <!-- Right: Results -->
+                <div class="result-section">
+                    <h2 class="result-heading">Prediction of Given Image</h2>
+                    <h3 class="result-marathi">दिलेल्या प्रतिमेचा अंदाज</h3>
+                    
+                    <div class="prediction-result">
+                        <p class="prediction-label">Detected Disease:</p>
+                        <p class="prediction-value">{{data[0]}}</p>
+                    </div>
+                    
+                    <a href="/" class="btn-back">Go Back</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
